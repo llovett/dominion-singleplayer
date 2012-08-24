@@ -47,7 +47,7 @@ class Game:
         for p in self.players:
             newHand = 3*[VictoryCard(cost=2,value=1,name="estate")] + 7*[TreasureCard(cost=0,value=1,name="copper")]
             p.deck.extend( newHand )
-            p.shuffleDeck()
+            p.shuffle(p.deck)
 
             # Draw a hand for each player
             for i in range(5):p.drawCard()

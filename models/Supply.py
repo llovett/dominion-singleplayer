@@ -33,13 +33,9 @@ class Supply (object):
         '''
         Returns the count of an arbitrary card. Returns 0 if the card doesn't exist.
         '''
-        if cardName in self.actions.keys():
-            return len(self.actions[cardName])
-        elif cardName in self.vcs.keys():
-            return len(self.vcs[cardName])
-        elif cardName in self.treasures.keys():
-            return len(self.treasures[cardName])
-
+        for category in (self.actions,self.treasures,self.vcs):
+            if cardName in category.keys():
+                return len(category[cardName])
         return 0
         
     def viewCard(self, cardName):

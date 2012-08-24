@@ -25,6 +25,7 @@ class Player (object):
         return card
 
     def printStatus(self):
+        print "%d cards left in your deck, %d in the discard."%(len(self.deck),len(self.discard))
         print "BUYS: %d, ACTIONS: %d, COIN: %d"%(self.numBuys,self.numActions,self.coin)
 
     def takeTurn(self):
@@ -51,6 +52,17 @@ class Player (object):
             card = self.buyCard()
 
         self.turn_phase = CLEANUP_PHASE
+        # Hand goes into discard
+        self.discard.extend(self.hand + self.active_cards)
+        self.hand = []
+        self.active_cards = []
+        # Shuffle deck if necessary
+        if len(self.deck) < 5:
+            self.shuffle(self.discard)
+            self.deck = self.discard + self.deck
+            self.discard = []
+        for i in range(5):self.drawCard()
+
         return
 
     def selectCard(self):
@@ -87,12 +99,12 @@ class Player (object):
                         return cards
                     else:
                         print "You have no treasure cards."
-                elif strWhich.lower() == 'none':
+                elif strWhich.lower() == 'none' or len(strWhich) == 0:
                     return None
 
         card = self.hand[which-1]
         self.hand.pop(which-1)
-        return list(card)
+        return [card]
 
     def buyCard(self):
         '''
@@ -108,7 +120,7 @@ class Player (object):
             what = raw_input("What card do you want to buy (name, or 'none')? ")
             try:
                 # Exit at user's request
-                if what.lower() == "none":
+                if what.lower() == "none" or len(what) == 0:
                     return None
 
                 # See if there are cards left
@@ -133,11 +145,11 @@ class Player (object):
 
         return None
 
-    def shuffleDeck(self):
-        for c in self.deck:
-            index1 = int(random()*len(self.deck))
-            index2 = int(random()*len(self.deck))
-            self.deck[index1], self.deck[index2] = self.deck[index2], self.deck[index1]
+    def shuffle(self,deck):
+        for c in deck:
+            index1 = int(random()*len(deck))
+            index2 = int(random()*len(deck))
+            deck[index1], deck[index2] = deck[index2], deck[index1]
 
     def __str__(self):
         return "%s: <%s>"%(self.name,str(self.deck))
