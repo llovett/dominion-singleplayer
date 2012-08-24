@@ -1,39 +1,35 @@
 from TreasureCard import TreasureCard
 from VictoryCard import VictoryCard
 from ActionCard import ActionCard
+from Supply import Supply
 from Player import Player
+from ComputerPlayer import ComputerPlayer
 import Actions
 
 class Game:
     def __init__(self, players=2):
         assert(players>=2)
 
-        self.supply = {"copper":[],
-                       "silver":[],
-                       "gold":[],
-                       "estate":[],
-                       "duchy":[],
-                       "province":[],
-                       "woodcutter":[]}
+        self.supply = Supply()
         self.user = None
         self.players = []
 
         # Build the base deck
         # TREASURE CARDS
-        self.supply['copper'].extend(20*[TreasureCard(value=1,cost=0,name="copper")])
-        self.supply['silver'].extend(20*[TreasureCard(value=2,cost=3,name="silver")])
-        self.supply['gold'].extend(20*[TreasureCard(value=3,cost=6,name="gold")])
+        self.supply.addDeck(TreasureCard(value=1,cost=0,name="copper"),20)
+        self.supply.addDeck(TreasureCard(value=2,cost=3,name="silver"),20)
+        self.supply.addDeck(TreasureCard(value=3,cost=6,name="gold"),20)
 
         # VICTORY CARDS
         vcs = players * 2 + 4
-        self.supply['estate'].extend(vcs * [VictoryCard(value=1,cost=2,name="estate")])
-        self.supply['duchy'].extend(vcs * [VictoryCard(value=3,cost=5,name="duchy")])
-        self.supply['province'].extend(vcs * [VictoryCard(value=6,cost=8,name="province")])
+        self.supply.addDeck(VictoryCard(value=1,cost=2,name="estate"),vcs)
+        self.supply.addDeck(VictoryCard(value=3,cost=5,name="duchy"),vcs)
+        self.supply.addDeck(VictoryCard(value=6,cost=8,name="province"),vcs)
 
         # ACTION CARDS
-        self.supply['woodcutter'].extend(10 * [ActionCard(cost=3,name="woodcutter",action=Actions.woodcutter)])
+        self.supply.addDeck(ActionCard(cost=3,name="woodcutter",action=Actions.woodcutter),vcs)
 
-        # Create players, deal out hands
+        # Create the players
         user = raw_input("What is your name? ")
         self.user = Player(user,self)
         self.players.append(self.user)
@@ -46,30 +42,32 @@ class Game:
             except ValueError:
                 if len(strNumPlayers) == 0:numPlayers=1
         for i in range(numPlayers):
-            self.players.append(Player("qasdfasdgasdfasdf",self))
+            self.players.append(ComputerPlayer(self))
 
         for p in self.players:
-            newHand = [VictoryCard(cost=2,value=1,name="estate") for i in range(3)] + [TreasureCard(cost=0,value=1,name="copper") for i in range(7)]
+            newHand = 3*[VictoryCard(cost=2,value=1,name="estate")] + 7*[TreasureCard(cost=0,value=1,name="copper")]
             p.deck.extend( newHand )
             p.shuffleDeck()
 
             # Draw a hand for each player
             for i in range(5):p.drawCard()
 
-        print "Supply:"
-        self.printSupply()
+        print "The supply:"
+        print self.supply
 
-        self.user.takeTurn()
+        print "Number of empties: %d"%self.supply.countEmpties()
+        print "provies: %d"%self.supply.count("province")
+            
+        # The game loop
+        while self.supply.countEmpties() < 3 and self.supply.count("province") > 0:
+            for player in self.players:
+                if player is self.user:
+                    print "Supply:"
+                    print self.supply
+                player.takeTurn()
 
-    def printSupply(self):
-        for key,val in self.supply.iteritems():
-            print key.upper()
-            if len(self.supply[key]) > 0:
-                print "cost: "+str(self.supply[key][0].cost)
-                print "%d left in supply"%len(self.supply[key])
-            else:
-                print "None left."
-            print ""
+    def getOpponents(self):
+        return self.players[1:]
 
 def main():
     game = Game()

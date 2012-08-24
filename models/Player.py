@@ -1,3 +1,4 @@
+from TreasureCard import TreasureCard
 from random import random
 
 ACTION_PHASE = 0
@@ -23,6 +24,9 @@ class Player (object):
         self.hand.append(card)
         return card
 
+    def printStatus(self):
+        print "BUYS: %d, ACTIONS: %d, COIN: %d"%(self.numBuys,self.numActions,self.coin)
+
     def takeTurn(self):
         '''
         The player takes a turn. Do not override this method. See selectCard()
@@ -33,10 +37,13 @@ class Player (object):
         self.numBuys = self.numActions = 1
         self.turn_phase = ACTION_PHASE
 
-        card = self.selectCard()
-        while card:
-            self.active_cards.append(card)
-            card = self.selectCard()
+        cards = self.selectCard()
+        while cards:
+            self.active_cards.extend(cards)
+            for card in cards:
+                print "%s plays %s"%(self.name,card.name)
+                card.play(self,self.game.getOpponents())
+            cards = self.selectCard()
 
         self.turn_phase = BUY_PHASE
         card = self.buyCard()
@@ -51,9 +58,13 @@ class Player (object):
         Promt the user for a card to play, or choose one programmatically.
         Remove the card from the user's hand. Make sure that the card is
         able to be played (e.g., action card is not played in the buy phase, etc.)
-        Return the card selected.
+        Return the a list of the cards selected.
         '''
 
+        if len(self.hand) == 0:
+            print "You have no cards left."
+            return None
+        
         print "Your cards:"
         print 30 * '-'
         for i in range(len(self.hand)):
@@ -62,14 +73,26 @@ class Player (object):
 
         which = 0
         while which < 1 or which > len(self.hand):
+            self.printStatus()
             try:
-                which = int(raw_input("Which card do you want to play? "))
+                strWhich = raw_input("Which card do you want to play (#, $, or 'none')? ")
+                which = int(strWhich)
             except ValueError:
-                pass
+                if strWhich.lower() == '$':
+                    def q(list,x):
+                        list.remove(x)
+                        return x
+                    cards = [q(self.hand,x) for x in filter(lambda x:isinstance(x,TreasureCard),self.hand)]
+                    if len(cards) > 0:
+                        return cards
+                    else:
+                        print "You have no treasure cards."
+                elif strWhich.lower() == 'none':
+                    return None
 
         card = self.hand[which-1]
         self.hand.pop(which-1)
-        return card
+        return list(card)
 
     def buyCard(self):
         '''
@@ -81,18 +104,19 @@ class Player (object):
 
         what = ""
         while len(what) < 1 and self.numBuys > 0:
+            self.printStatus()
             what = raw_input("What card do you want to buy (name, or 'none')? ")
             try:
                 # Exit at user's request
-                if what.lower() is "none":
+                if what.lower() == "none":
                     return None
 
                 # See if there are cards left
-                if len(self.game.supply[what]) > 0:
-                    card = self.game.supply[what][-1]
+                if self.game.supply.count(what) > 0:
+                    card = self.game.supply.viewCard(what)
                     # Can we afford it?
                     if card.cost <= self.coin:
-                        self.game.supply[what].pop()
+                        card = self.game.supply.drawCard(what)
                         self.coin -= card.cost
                         self.discard.append(card)
                         self.numBuys -= 1
