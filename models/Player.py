@@ -21,9 +21,26 @@ class Player (object):
         Draws a card from the player's deck and adds it to their hand.
         Returns the card drawn.
         '''
+        # Shuffle deck if necessary
+        if len(self.deck) < 5:
+            self.shuffle(self.discard)
+            self.deck = self.discard + self.deck
+            self.discard = []
         card = self.deck.pop()
         self.hand.append(card)
         return card
+
+    def discardCard(self,cardName):
+        '''
+        Discards a named card from the player's hand. Returns the card discarded,
+        or None if no such card exists.
+        '''
+        cards = filter(lambda x:x.name == cardName,self.hand)
+        if len(cards) == 0:
+            return None
+        self.hand.remove(cards[0])
+        self.discard.append(cards[0])
+        return cards[0]
 
     def printStatus(self):
         def round5(num):
@@ -62,11 +79,6 @@ class Player (object):
         self.discard.extend(self.hand + self.active_cards)
         self.hand = []
         self.active_cards = []
-        # Shuffle deck if necessary
-        if len(self.deck) < 5:
-            self.shuffle(self.discard)
-            self.deck = self.discard + self.deck
-            self.discard = []
         for i in range(5):self.drawCard()
 
         return
@@ -86,7 +98,7 @@ class Player (object):
         print 30 * '-'
         print "Your cards:"
         for i in range(len(self.hand)):
-            print "%d) %s"%(i+1,self.hand[i])
+            print str(self.hand[i])
         print 30 * '-'
 
         which = ""
@@ -110,6 +122,7 @@ class Player (object):
                 card = filter(lambda x:x.name == which,self.hand)
                 if len(card) == 0:
                     print "You don't have that card."
+                    which = ""
                 else:
                     card = card[0]
                     if isinstance(card,ActionCard) and self.numActions < 1:
