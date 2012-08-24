@@ -64,6 +64,9 @@ class Game:
                 if player is self.user:
                     print "Supply:"
                     print self.supply
+                print
+                print "{}'s turn.".format(player.name)
+                print 30*'='
                 player.takeTurn()
 
     def getOpponents(self):

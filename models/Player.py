@@ -1,4 +1,5 @@
 from TreasureCard import TreasureCard
+from ActionCard import ActionCard
 from random import random
 
 ACTION_PHASE = 0
@@ -25,8 +26,13 @@ class Player (object):
         return card
 
     def printStatus(self):
-        print "%d cards left in your deck, %d in the discard."%(len(self.deck),len(self.discard))
+        def round5(num):
+            return int((float(num)/5)*5)
+        print 30 * '-'
+        print "About {} cards left in your deck, {} in the discard.".format(round5(len(self.deck)),
+                                                                            round5(len(self.discard)))
         print "BUYS: %d, ACTIONS: %d, COIN: %d"%(self.numBuys,self.numActions,self.coin)
+        print 30 * '-'
 
     def takeTurn(self):
         '''
@@ -77,33 +83,40 @@ class Player (object):
             print "You have no cards left."
             return None
         
-        print "Your cards:"
         print 30 * '-'
+        print "Your cards:"
         for i in range(len(self.hand)):
             print "%d) %s"%(i+1,self.hand[i])
         print 30 * '-'
 
-        which = 0
-        while which < 1 or which > len(self.hand):
+        which = ""
+        card = None
+        while len(which) == 0:
             self.printStatus()
-            try:
-                strWhich = raw_input("Which card do you want to play (#, $, or 'none')? ")
-                which = int(strWhich)
-            except ValueError:
-                if strWhich.lower() == '$':
-                    def q(list,x):
-                        list.remove(x)
-                        return x
-                    cards = [q(self.hand,x) for x in filter(lambda x:isinstance(x,TreasureCard),self.hand)]
-                    if len(cards) > 0:
-                        return cards
-                    else:
-                        print "You have no treasure cards."
-                elif strWhich.lower() == 'none' or len(strWhich) == 0:
-                    return None
 
-        card = self.hand[which-1]
-        self.hand.pop(which-1)
+            which = raw_input("Which card do you want to play (name, $, or 'none')? ")
+            if which == '$':
+                def q(list,x):
+                    list.remove(x)
+                    return x
+                cards = [q(self.hand,x) for x in filter(lambda x:isinstance(x,TreasureCard),self.hand)]
+                if len(cards) > 0:
+                    return cards
+                else:
+                    print "You have no treasure cards."
+            elif which == 'none' or len(which) == 0:
+                return None
+            else:
+                card = filter(lambda x:x.name == which,self.hand)
+                if len(card) == 0:
+                    print "You don't have that card."
+                else:
+                    card = card[0]
+                    if isinstance(card,ActionCard) and self.numActions < 1:
+                        print "You have no actions left."
+                        which = ""
+
+        self.hand.remove(card)
         return [card]
 
     def buyCard(self):

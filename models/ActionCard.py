@@ -8,3 +8,4 @@ class ActionCard (Card):
 
     def play(self, player, opponents):
         self.callback(player,opponents)
+        player.numActions -= 1
