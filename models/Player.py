@@ -27,6 +27,8 @@ class Player (object):
             self.deck = self.discard + self.deck
             self.discard = []
         card = self.deck.pop()
+        # This should only happen for human players. Split Player into HumanPlayer and ComputerPlayer?
+        print "{} draws a {}".format(self.name,card.name)
         self.hand.append(card)
         return card
 
@@ -42,9 +44,18 @@ class Player (object):
         self.discard.append(cards[0])
         return cards[0]
 
+    def discardCardChoice(self):
+        '''
+        Prompts the user to discard a card. Returns the card discarded, or None.
+        '''
+        which = raw_input("Discard a card (name)? ")
+        if which == 'none' or len(which) == 0:
+            return None
+        return self.discardCard(which)
+
     def printStatus(self):
         def round5(num):
-            return int((float(num)/5)*5)
+            return int(float(num)/5)*5
         print 30 * '-'
         print "About {} cards left in your deck, {} in the discard.".format(round5(len(self.deck)),
                                                                             round5(len(self.discard)))
@@ -65,7 +76,7 @@ class Player (object):
         while cards:
             self.active_cards.extend(cards)
             for card in cards:
-                print "%s plays %s"%(self.name,card.name)
+                print "{} plays {}".format(self.name,card.name)
                 card.play(self,self.game.getOpponents())
             cards = self.selectCard()
 
@@ -177,5 +188,28 @@ class Player (object):
             index2 = int(random()*len(deck))
             deck[index1], deck[index2] = deck[index2], deck[index1]
 
+    # def react(self,attacker,attack):
+    #     '''
+    #     Gives the player an opportunity to react to an attack card.
+    #     The 'attack' parameter is a function that can be applied to the player to
+    #     effect the attack (e.g., discard 2 cards, gain a curse, etc). This method
+    #     should return True if the attack can be evaded, False otherwise.
+    #     '''
+    #     # For human players, just ask if they want to use a defense card, and play it here.
+    #     defenseCards = filter(lambda x:x.defense,self.hand)
+    #     if len(defenseCards) > 0:
+    #         print "{} has played an attack card.".format(attacker.name)
+    #         defense = ""
+    #         while len(defense) == 0:
+    #             defense = raw_input("Would you like to reveal a defense card (name or 'none')? ")
+    #             if defense.lower() == 'none':
+    #                 return False
+    #             try:
+    #                 card = defenseCards.filter(lambda x:x.name == defense,defenseCards)[0]
+    #                 card.defend
+    #             except IndexError:
+    #                 print "You don't have that card."
+    #                 defense = ""
+                    
     def __str__(self):
         return "%s: <%s>"%(self.name,str(self.deck))

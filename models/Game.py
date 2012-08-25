@@ -27,11 +27,14 @@ class Game:
         self.supply.addDeck(VictoryCard(value=6,cost=8,name="province"),vcs)
 
         # ACTION CARDS
-        self.supply.addDeck(ActionCard(cost=3,name="woodcutter",action=Actions.woodcutter),vcs)
-        self.supply.addDeck(ActionCard(cost=5,name="festival",action=Actions.festival),vcs)
-        self.supply.addDeck(ActionCard(cost=5,name="market",action=Actions.market),vcs)
-        self.supply.addDeck(ActionCard(cost=2,name="chapel",action=Actions.chapel),vcs)
-        self.supply.addDeck(ActionCard(cost=2,name="cellar",action=Actions.cellar),vcs)
+        self.supply.addDeck(ActionCard(cost=3,name="woodcutter",action=Actions.woodcutter),10)
+        self.supply.addDeck(ActionCard(cost=5,name="festival",action=Actions.festival),10)
+        self.supply.addDeck(ActionCard(cost=5,name="market",action=Actions.market),10)
+        self.supply.addDeck(ActionCard(cost=2,name="chapel",action=Actions.chapel),10)
+        self.supply.addDeck(ActionCard(cost=2,name="cellar",action=Actions.cellar),10)
+        self.supply.addDeck(ActionCard(cost=4,name="feast",action=Actions.feast),10)
+        self.supply.addDeck(ActionCard(cost=4,name="moneylender",action=Actions.moneylender),10)
+        self.supply.addDeck(ActionCard(cost=4,name="throneroom",action=Actions.throneroom),10)
 
         # Create the players
         user = raw_input("What is your name? ")

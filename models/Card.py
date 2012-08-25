@@ -7,6 +7,7 @@ class Card (object):
         self.cost = int(kwargs['cost'])
         self.name = kwargs['name']
         self.description = "" if 'description' not in kwargs else kwargs['description']
+        self.defense = True if 'defense' in kwargs else False
 
     def play(self, player, opponents):
         '''
