@@ -7,7 +7,8 @@ class Card (object):
         self.cost = int(kwargs['cost'])
         self.name = kwargs['name']
         self.description = "" if 'description' not in kwargs else kwargs['description']
-        self.defense = True if 'defense' in kwargs else False
+        # Reaction = defense card, reaction card, or anything played out-of-turn
+        self.reaction = None if not 'reaction' in kwargs else kwargs['reaction']
 
     def play(self, player, opponents):
         '''

@@ -89,7 +89,65 @@ def throneroom(player,opponents):
                 actionCard = actionCards[0]
                 applyTR(actionCard)
         
-    
+def moat(player,opponents):
+    for i in range(2):player.drawCard()
+
+def workshop(player,opponents):
+    which = ""
+    while len(which) == 0:
+        which = raw_input("Gain a card costing up to (4)? ")
+        card = player.game.supply.viewCard(which)
+        if not card:
+            print "That card isn't in the supply."
+            which = ""
+        elif card.cost > 4:
+            print "That card costs more than (4)."
+            which = ""
+        else:
+            print "You gain a {}.".format(card.name)
+            player.discard.append(player.supply.drawCard(which))
+
+def village(player,opponents):
+    player.numActions += 2
+    player.drawCard()
+
+def chancellor(player,opponents):
+    player.coin += 2
+    doDiscard = ""
+    while len(doDiscard) == 0:
+        doDiscard = raw_input("Put deck into discard pile (y/n)? ")
+        if doDiscard.lower() == 'yes' or doDiscard.lower() == 'y':
+            player.discard.extend(player.deck)
+            player.deck = []
+        elif doDiscard.lower() == 'no' or doDiscard.lower() == 'n':
+            pass
+        else:
+            doDiscard = ""
+
+def smithy(player,opponents):
+    for i in range(3):player.drawCard()
+
+def remodel(player,opponents):
+    toRemodel = None
+    while toRemodel is None:
+        which = raw_input("Which card should be remodeled? ")
+        toRemodel = player.findCard(which)
+    # Trash the card
+    player.hand.remove(toRemodel)
+    remodeled = None
+    maxCost = toRemodel.cost+2
+    while remodeled is None:
+        which = raw_input("Remodel into which card (cost up to {})? ".format(maxCost))
+        remodeled = player.game.supply.viewCard(which)
+        if remodeled and remodeled.cost > maxCost:
+            print "That card is too expensive."
+            remodeled = None
+        elif remodeled:
+            print "{} remodels {} into {}.".format(player.name,toRemodel.name,remodeled.name)
+            player.discard.append(player.game.supply.drawCard(which))
+        else:
+            print "You don't have that card."
+
 # What do I DO about THIS???
 # def militia(player,opponents):
 #     player.coin += 2

@@ -143,6 +143,17 @@ class Player (object):
         self.hand.remove(card)
         return [card]
 
+    def findCard(self,cardName):
+        '''
+        Finds the card called 'cardName' in the user's hand. Returns None
+        if no such card exists. The card should not be removed from the hand.
+        '''
+        try:
+            card = filter(lambda x:x.name == cardName,self.hand)[0]
+        except IndexError:
+            return None
+        return card
+        
     def buyCard(self):
         '''
         Prompt the user for a card to buy from the supply, or a treasure/victory card,
@@ -175,7 +186,7 @@ class Player (object):
                         print "Not enough coin for that."
                         what = ""
                 else:
-                    print "No more of that card left."
+                    print "That card isn't in the supply."
                     what = ""
             except KeyError:
                 what = ""
