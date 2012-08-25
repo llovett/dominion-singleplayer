@@ -40,6 +40,10 @@ class Game:
         self.supply.addDeck(ActionCard(cost=4,name="smithy",action=Actions.smithy),10)
         self.supply.addDeck(ActionCard(cost=4,name="remodel",action=Actions.remodel),10)
         self.supply.addDeck(ActionCard(cost=3,name="village",action=Actions.village),10)
+        self.supply.addDeck(ActionCard(cost=5,name="mine",action=Actions.mine),10)
+        self.supply.addDeck(ActionCard(cost=6,name="adventurer",action=Actions.adventurer),10)
+        self.supply.addDeck(ActionCard(cost=5,name="library",action=Actions.library),10)
+        self.supply.addDeck(ActionCard(cost=5,name="councilroom",action=Actions.councilroom),10)
 
         # Create the players
         user = raw_input("What is your name? ")

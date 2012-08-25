@@ -1,5 +1,6 @@
 from ComputerPlayer import ComputerPlayer
 from ActionCard import ActionCard
+from TreasureCard import TreasureCard
 
 def woodcutter(player,opponents):
     player.coin += 2
@@ -148,6 +149,68 @@ def remodel(player,opponents):
         else:
             print "You don't have that card."
 
+def laboratory(player,opponents):
+    for i in range(2):player.drawCard()
+    player.numActions += 1
+
+def library(player,opponents):
+    while len(player.hand) < 7:
+        card = player.drawCard()
+        if isinstance(card, ActionCard):
+            keep = ""
+            while len(keep) == 0:
+                keep = raw_input("Library revealed a {}. Keep it (y/n)? ".format(card.name))
+                if keep.lower() == 'yes' or keep.lower() == 'y':
+                    pass
+                elif keep.lower() == 'no' or keep.lower() == 'n':
+                    player.discardCard(card.name)
+                else:
+                    keep = ""
+
+def councilroom(player,opponents):
+    for i in range(4):player.drawCard()
+    for o in opponents:o.drawCard()
+    player.numBuys += 1
+
+def mine(player,opponents):
+    treasureCards = filter(lambda x:isinstance(x,TreasureCard),player.hand)
+    card = None
+    while not card:
+        toMine = raw_input("Which treasure would you like to mine? ")
+        try:
+            card = filter(lambda x:x.name==toMine,treasureCards)[0]
+            # Trash the treasure
+            player.hand.remove(card)
+        except IndexError:
+            print "That's not a treasure card you have."
+    mined = None
+    
+    while not mined:
+        which = raw_input("Exchange this treasure for which other treasure? ")
+        mined = player.game.supply.findCard(which)
+        if not card:
+            print "That card isn't in the supply."
+        elif not isinstance(card,TreasureCard):
+            print "That is not a treasure card."
+            mined = None
+        elif mined.cost > card.cost + 3:
+            print "That card is too expensive."
+            mined = None
+        else:
+            player.hand.append(player.game.supply.drawCard(which))
+        
+def adventurer(player,opponents):
+    maxDraws = len(player.deck) + len(player.discard)
+    treasuresFound = 0
+    while maxDraws > 0 and treasuresFound < 2:
+        card = player.drawCard()
+        if isinstance(card,TreasureCard):
+            print "Adventurer revealed a {}.".format(card.name)
+            treasuresFound += 1
+        else:
+            player.discardCard(card.name)
+        maxDraws -= 1
+        
 # What do I DO about THIS???
 # def militia(player,opponents):
 #     player.coin += 2
