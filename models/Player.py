@@ -13,6 +13,7 @@ class Player (object):
         self.active_cards = []
         self.discard = []
         self.deck = []
+        self.score = 0
         self.game = game
 
     def drawCard(self):

@@ -86,6 +86,17 @@ class Game:
                 print "{}'s turn.".format(player.name)
                 print 30*'='
                 player.takeTurn()
+        # End-of-game
+        for player in self.players:
+            allCards = player.hand + player.deck + player.discard
+            vps = [c for c in allCards if isinstance(c,VictoryCard)]
+            player.score = sum(vp.value for vp in vps)
+        ranks = sorted(self.players,key=lambda x:x.score,reverse=True)
+        print
+        print "{} is the winner!".format(ranks[0].name)
+        for p in ranks:
+            print "name:{}\nscore:{}".format(p.name,p.score)
+            print 30*'-'
 
     def getOpponents(self,player):
         return [p for p in self.players if p is not player]
