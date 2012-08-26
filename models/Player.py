@@ -77,7 +77,7 @@ class Player (object):
             self.active_cards.extend(cards)
             for card in cards:
                 print "{} plays {}".format(self.name,card.name)
-                card.play(self,self.game.getOpponents())
+                card.play(self,self.game.getOpponents(self))
             cards = self.selectCard()
 
         self.turn_phase = BUY_PHASE
@@ -127,6 +127,7 @@ class Player (object):
                     return cards
                 else:
                     print "You have no treasure cards."
+                    which = ""
             elif which == 'none' or len(which) == 0:
                 return None
             else:
@@ -199,28 +200,29 @@ class Player (object):
             index2 = int(random()*len(deck))
             deck[index1], deck[index2] = deck[index2], deck[index1]
 
-    # def react(self,attacker,attack):
-    #     '''
-    #     Gives the player an opportunity to react to an attack card.
-    #     The 'attack' parameter is a function that can be applied to the player to
-    #     effect the attack (e.g., discard 2 cards, gain a curse, etc). This method
-    #     should return True if the attack can be evaded, False otherwise.
-    #     '''
-    #     # For human players, just ask if they want to use a defense card, and play it here.
-    #     defenseCards = filter(lambda x:x.defense,self.hand)
-    #     if len(defenseCards) > 0:
-    #         print "{} has played an attack card.".format(attacker.name)
-    #         defense = ""
-    #         while len(defense) == 0:
-    #             defense = raw_input("Would you like to reveal a defense card (name or 'none')? ")
-    #             if defense.lower() == 'none':
-    #                 return False
-    #             try:
-    #                 card = defenseCards.filter(lambda x:x.name == defense,defenseCards)[0]
-    #                 card.defend
-    #             except IndexError:
-    #                 print "You don't have that card."
-    #                 defense = ""
+    def react(self,attacker,attack):
+        '''
+        Gives the player an opportunity to react to an attack card.
+        The 'attack' parameter is a function that can be applied to the player to
+        effect the attack (e.g., discard 2 cards, gain a curse, etc).
+        '''
+        # For human players, just ask if they want to use a defense card, and play it here.
+        defenseCards = [card for card in self.hand if card.reaction]
+        if len(defenseCards) > 0:
+            print "{} has played an attack card.".format(attacker.name)
+            defense = ""
+            while len(defense) == 0:
+                defense = raw_input("Would you like to reveal a defense card (name or 'none')? ")
+                if defense.lower() == 'none':
+                    attack(self)
+                try:
+                    card = defenseCards.filter(lambda x:x.name == defense,defenseCards)[0]
+                    card.reaction(self,self.game.getOpponents(self),attack)
+                except IndexError:
+                    print "You don't have that card."
+                    defense = ""
+        else:
+            attack(self)
                     
     def __str__(self):
         return "%s: <%s>"%(self.name,str(self.deck))

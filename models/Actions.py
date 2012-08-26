@@ -1,3 +1,12 @@
+#
+# Actions.py
+# 
+# This file contains definitions for each ActionCard that tell it how
+# to act when played. Each function gets a pointer to the current
+# player ('player') and their opponents ('opponents'). Note that the
+# names of these function definitions MUST MATCH EXACTLY the name of
+# the card in your set.
+# 
 from ComputerPlayer import ComputerPlayer
 from ActionCard import ActionCard
 from TreasureCard import TreasureCard
@@ -210,14 +219,11 @@ def adventurer(player,opponents):
         else:
             player.discardCard(card.name)
         maxDraws -= 1
-        
-# What do I DO about THIS???
-# def militia(player,opponents):
-#     player.coin += 2
-#     for o in opponents:
-#         # This is what the attack is. Each opponent must react to this
-#         attack = lambda x:for i in range(2):x.discardCard()
-#         if not o.react(player,attack):
-#             # Opponent could not cancel the attack
-#             attack(o)
-            
+
+def militia(player,opponents):
+    player.coin += 2
+    for o in opponents:
+        # This is what the attack is. Each opponent must react to this
+        def attack(p):
+            for i in range(2):p.discardCardChoice()
+        o.react(player,attack)

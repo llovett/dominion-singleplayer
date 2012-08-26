@@ -5,6 +5,7 @@ from Supply import Supply
 from Player import Player
 from ComputerPlayer import ComputerPlayer
 import Actions
+import Reactions
 
 class Game:
     def __init__(self, players=2):
@@ -35,7 +36,7 @@ class Game:
         self.supply.addDeck(ActionCard(cost=4,name="feast",action=Actions.feast),10)
         self.supply.addDeck(ActionCard(cost=4,name="moneylender",action=Actions.moneylender),10)
         self.supply.addDeck(ActionCard(cost=4,name="throneroom",action=Actions.throneroom),10)
-        self.supply.addDeck(ActionCard(cost=2,name="moat",action=Actions.moat),10)
+        self.supply.addDeck(ActionCard(cost=2,name="moat",action=Actions.moat,reaction=Reactions.moat),10)
         self.supply.addDeck(ActionCard(cost=4,name="workshop",action=Actions.workshop),10)
         self.supply.addDeck(ActionCard(cost=4,name="smithy",action=Actions.smithy),10)
         self.supply.addDeck(ActionCard(cost=4,name="remodel",action=Actions.remodel),10)
@@ -44,6 +45,7 @@ class Game:
         self.supply.addDeck(ActionCard(cost=6,name="adventurer",action=Actions.adventurer),10)
         self.supply.addDeck(ActionCard(cost=5,name="library",action=Actions.library),10)
         self.supply.addDeck(ActionCard(cost=5,name="councilroom",action=Actions.councilroom),10)
+        self.supply.addDeck(ActionCard(cost=4,name="militia",action=Actions.militia),10)
 
         # Create the players
         user = raw_input("What is your name? ")
@@ -85,8 +87,8 @@ class Game:
                 print 30*'='
                 player.takeTurn()
 
-    def getOpponents(self):
-        return self.players[1:]
+    def getOpponents(self,player):
+        return [p for p in self.players if p is not player]
 
 def main():
     game = Game()
