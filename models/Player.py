@@ -52,7 +52,7 @@ class Player (object):
         self.discard.append(cards[0])
         return cards[0]
 
-    def cardToDeck(self,selection):
+    def cardToDeckChoice(self,selection):
         '''
         Select a card from 'selection' to put on top of the deck.
         '''

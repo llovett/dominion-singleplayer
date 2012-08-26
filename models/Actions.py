@@ -143,7 +143,6 @@ def remodel(player,opponents):
     while toRemodel is None:
         which = raw_input("Which card should be remodeled? ")
         toRemodel = player.findCard(which)
-    # Trash the card
     player.hand.remove(toRemodel)
     remodeled = None
     maxCost = toRemodel.cost+2
@@ -229,6 +228,26 @@ def militia(player,opponents):
             for i in range(2):p.discardCardChoice()
         o.react(player,attack)
 
+def spy(player,opponents):
+    player.drawCard()
+    player.numActions += 1
+    def attack(p):
+        card = p.drawCard()
+        print "{} reveals a {}."
+        todo = ""
+        while len(todo) == 0:
+            todo = raw_input("Should {} discard {} or put it back (discard/put)? ")
+            if todo.lower() == "discard" or todo.lower() == "d":
+                p.discard.append(card)
+            elif todo.lower() == "put" or todo.lower() == "p":
+                p.deck.append(card)
+            else:
+                print "I don't understand that."
+                todo = ""
+    attack(player)
+    for o in opponents:
+        o.react(player,attack)
+
 def bureaucrat(player,opponents):
     silver = player.game.supply.drawCard("silver")
     if silver:
@@ -239,7 +258,7 @@ def bureaucrat(player,opponents):
             vcs = [c for c in p.hand if isinstance(c,VictoryCard)]
             if len(vcs) == 0:
                 return
-            p.cardToDeck(vcs)
+            p.cardToDeckChoice(vcs)
         o.react(player,attack)
 
 def witch(player,opponents):
