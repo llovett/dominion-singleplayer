@@ -8,9 +8,7 @@
 # the card in your set.
 # 
 from ComputerPlayer import ComputerPlayer
-from ActionCard import ActionCard
-from TreasureCard import TreasureCard
-from VictoryCard import VictoryCard
+from Card import ActionCard, TreasureCard, VictoryCard
 
 def woodcutter(player,opponents):
     player.coin += 2
