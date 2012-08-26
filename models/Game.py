@@ -1,8 +1,6 @@
-from TreasureCard import TreasureCard
-from VictoryCard import VictoryCard
-from ActionCard import ActionCard
 from Supply import Supply
 from Player import Player
+from Card import TreasureCard, ActionCard, VictoryCard
 from ComputerPlayer import ComputerPlayer
 import Actions
 import Reactions

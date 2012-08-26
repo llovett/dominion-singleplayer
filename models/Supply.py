@@ -1,6 +1,4 @@
-from ActionCard import ActionCard
-from TreasureCard import TreasureCard
-from VictoryCard import VictoryCard
+from Card import ActionCard, TreasureCard, VictoryCard 
 
 class Supply (object):
 
