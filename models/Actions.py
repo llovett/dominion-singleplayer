@@ -10,6 +10,7 @@
 from ComputerPlayer import ComputerPlayer
 from ActionCard import ActionCard
 from TreasureCard import TreasureCard
+from VictoryCard import VictoryCard
 
 def woodcutter(player,opponents):
     player.coin += 2
@@ -226,4 +227,17 @@ def militia(player,opponents):
         # This is what the attack is. Each opponent must react to this
         def attack(p):
             for i in range(2):p.discardCardChoice()
+        o.react(player,attack)
+
+def bureaucrat(player,opponents):
+    silver = player.game.supply.drawCard("silver")
+    if silver:
+        player.deck.append(silver)
+        print "{} puts a silver on top of their deck.".format(player.name)
+    for o in opponents:
+        def attack(p):
+            vcs = [c for c in p.hand if isinstance(c,VictoryCard)]
+            if len(vcs) == 0:
+                return
+            o.cardToDeck(vcs)
         o.react(player,attack)

@@ -44,6 +44,24 @@ class Player (object):
         self.discard.append(cards[0])
         return cards[0]
 
+    def cardToDeck(self,selection):
+        '''
+        Select a card from 'selection' to put on top of the deck.
+        '''
+        choice = ""
+        while len(choice) == 0:
+            for s in selection:
+                print s
+            choice = raw_input("Choose a card to put on top of your deck: ")
+            select = [c for c in selection if c.name == choice]
+            if len(select) == 0:
+                print "You can't select that card."
+                choice = ""
+            else:
+                c = select[0]
+                self.hand.remove(c)
+                self.deck.append(c)
+        
     def discardCardChoice(self):
         '''
         Prompts the user to discard a card. Returns the card discarded, or None.
