@@ -116,7 +116,7 @@ def workshop(player,opponents):
             which = ""
         else:
             print "You gain a {}.".format(card.name)
-            player.discard.append(player.supply.drawCard(which))
+            player.gain(player.supply.drawCard(which))
 
 def village(player,opponents):
     player.numActions += 2
@@ -239,5 +239,12 @@ def bureaucrat(player,opponents):
             vcs = [c for c in p.hand if isinstance(c,VictoryCard)]
             if len(vcs) == 0:
                 return
-            o.cardToDeck(vcs)
+            p.cardToDeck(vcs)
         o.react(player,attack)
+
+def witch(player,opponents):
+    for i in range(2):player.drawCard()
+    def attack(p):
+        curse = p.game.supply.drawCard("curse")
+        if curse:
+            p.gain(curse)

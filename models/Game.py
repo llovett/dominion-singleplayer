@@ -47,6 +47,7 @@ class Game:
         self.supply.addDeck(ActionCard(cost=5,name="councilroom",action=Actions.councilroom),10)
         self.supply.addDeck(ActionCard(cost=4,name="militia",action=Actions.militia),10)
         self.supply.addDeck(ActionCard(cost=4,name="bureaucrat",action=Actions.bureaucrat),10)
+        self.supply.addDeck(ActionCard(cost=5,name="witch",action=Actions.witch),10)
 
         # Create the players
         user = raw_input("What is your name? ")

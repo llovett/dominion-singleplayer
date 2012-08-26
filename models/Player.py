@@ -32,6 +32,14 @@ class Player (object):
         self.hand.append(card)
         return card
 
+    def gain(self,card,*args):
+        to = self.discard if len(args) == 0 else args[0]
+        '''
+        Player gains a card.
+        '''
+        if card:
+            to.append(card)
+
     def discardCard(self,cardName):
         '''
         Discards a named card from the player's hand. Returns the card discarded,
