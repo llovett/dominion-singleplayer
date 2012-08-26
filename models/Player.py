@@ -1,5 +1,4 @@
-from TreasureCard import TreasureCard
-from ActionCard import ActionCard
+from Card import TreasureCard, ActionCard, VictoryCard
 from random import random
 
 ACTION_PHASE = 0
