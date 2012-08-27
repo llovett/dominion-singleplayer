@@ -2,7 +2,6 @@ from Supply import Supply
 from Player import Player
 from Card import TreasureCard, ActionCard, VictoryCard
 from ComputerPlayer import ComputerPlayer
-import Actions
 import Cards
 
 class Game:
