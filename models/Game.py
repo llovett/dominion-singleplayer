@@ -12,7 +12,9 @@ class Game:
         self.user = None
         self.players = []
 
-        # Build the base deck
+        cards = self.chooseCards()
+
+        # Add decks to the supply
         # TREASURE CARDS
         self.supply.addDeck(Cards.Copper(),20)
         self.supply.addDeck(Cards.Silver(),20)
@@ -24,27 +26,31 @@ class Game:
         self.supply.addDeck(Cards.Duchy(),vcs)
         self.supply.addDeck(Cards.Province(),vcs)
 
-        # ACTION CARDS
-        self.supply.addDeck(Cards.Woodcutter(),10)
-        self.supply.addDeck(Cards.Festival(),10)
-        self.supply.addDeck(Cards.Market(),10)
-        self.supply.addDeck(Cards.Chapel(),10)
-        self.supply.addDeck(Cards.Cellar(),10)
-        self.supply.addDeck(Cards.Feast(),10)
-        self.supply.addDeck(Cards.Moneylender(),10)
-        self.supply.addDeck(Cards.Throneroom(),10)
-        self.supply.addDeck(Cards.Moat(),10)
-        self.supply.addDeck(Cards.Workshop(),10)
-        self.supply.addDeck(Cards.Smithy(),10)
-        self.supply.addDeck(Cards.Remodel(),10)
-        self.supply.addDeck(Cards.Village(),10)
-        self.supply.addDeck(Cards.Mine(),10)
-        self.supply.addDeck(Cards.Adventurer(),10)
-        self.supply.addDeck(Cards.Library(),10)
-        self.supply.addDeck(Cards.Councilroom(),10)
-        self.supply.addDeck(Cards.Militia(),10)
-        self.supply.addDeck(Cards.Bureaucrat(),10)
-        self.supply.addDeck(Cards.Witch(),10)
+        for card in cards:
+            type = getattr(Cards,card)
+            self.supply.addDeck(type(),10)
+
+        # # ACTION CARDS
+        # self.supply.addDeck(Cards.Woodcutter(),10)
+        # self.supply.addDeck(Cards.Festival(),10)
+        # self.supply.addDeck(Cards.Market(),10)
+        # self.supply.addDeck(Cards.Chapel(),10)
+        # self.supply.addDeck(Cards.Cellar(),10)
+        # self.supply.addDeck(Cards.Feast(),10)
+        # self.supply.addDeck(Cards.Moneylender(),10)
+        # self.supply.addDeck(Cards.Throneroom(),10)
+        # self.supply.addDeck(Cards.Moat(),10)
+        # self.supply.addDeck(Cards.Workshop(),10)
+        # self.supply.addDeck(Cards.Smithy(),10)
+        # self.supply.addDeck(Cards.Remodel(),10)
+        # self.supply.addDeck(Cards.Village(),10)
+        # self.supply.addDeck(Cards.Mine(),10)
+        # self.supply.addDeck(Cards.Adventurer(),10)
+        # self.supply.addDeck(Cards.Library(),10)
+        # self.supply.addDeck(Cards.Councilroom(),10)
+        # self.supply.addDeck(Cards.Militia(),10)
+        # self.supply.addDeck(Cards.Bureaucrat(),10)
+        # self.supply.addDeck(Cards.Witch(),10)
 
         # Create the players
         user = raw_input("What is your name? ")
@@ -99,6 +105,37 @@ class Game:
 
     def getOpponents(self,player):
         return [p for p in self.players if p is not player]
+
+    def chooseCards(self):
+        cards = [c for c in dir(Cards) if not c.startswith('__') and issubclass(getattr(Cards,c),ActionCard) and c is not 'ActionCard']
+        chosen = []
+        print "Choose your cards (number, name, or 'restart')."
+        for i in range(len(cards)):
+            print "{}) {}".format(i+1,cards[i])
+        counter = 0
+        while counter < 10:
+            if len(chosen) > 0:
+                print "Cards chosen so far:",
+                for i in range(len(chosen)):
+                    print "{}{}".format(chosen[i],"," if i < len(chosen)-1 else ""),
+                print
+            c = raw_input("Choose a card ({} left): ".format(10-counter))
+            try:
+                index = int(c)-1
+                if index >= 0 and index < len(cards):
+                    chosen.append(cards[index])
+                    counter += 1
+            except ValueError:
+                if c == 'restart':
+                    return self.chooseCards()
+                try:
+                    card = [ca for ca in cards if ca.lower() == c.lower()][0]
+                    cards.remove(card)
+                    chosen.append(card)
+                    counter += 1
+                except IndexError:
+                    pass
+        return chosen
 
 def main():
     game = Game()

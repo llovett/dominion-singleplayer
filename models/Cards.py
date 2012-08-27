@@ -50,6 +50,12 @@ class Gardens (VictoryCard):
     def getValue(self,player):
         return len([c for c in player.hand + player.discard + player.deck if isinstance(c,VictoryCard)])/10
 
+class Curse (VictoryCard):
+    def __init__(self,**kwargs):
+        super(Curse,self).__init__(name="curse",cost=0,**kwargs)
+    def getValue(self,player):
+        return -1
+
 # ACTION CARDS
 class Woodcutter (ActionCard):
     def __init__(self,**kwargs):
