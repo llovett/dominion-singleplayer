@@ -1,5 +1,4 @@
-from TreasureCard import TreasureCard
-from ActionCard import ActionCard
+from Card import TreasureCard, ActionCard, VictoryCard
 from random import random
 
 ACTION_PHASE = 0
@@ -14,6 +13,7 @@ class Player (object):
         self.active_cards = []
         self.discard = []
         self.deck = []
+        self.score = 0
         self.game = game
 
     def drawCard(self):
