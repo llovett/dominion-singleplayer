@@ -1,0 +1,10 @@
+cellar
+market
+militia
+moat
+mine
+remodel
+smithy
+village
+woodcutter
+workshop

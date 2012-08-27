@@ -3,6 +3,8 @@ from models.Player import Player
 from models.Card import TreasureCard, ActionCard, VictoryCard
 from models.ComputerPlayer import ComputerPlayer
 import models.Cards as Cards
+from random import random
+import os
 
 class Game:
     def __init__(self, players=2):
@@ -12,7 +14,18 @@ class Game:
         self.user = None
         self.players = []
 
-        cards = self.chooseCards()
+        # Choose card set
+        cardSet = ""
+        while len(cardSet) == 0:
+            cardSet = raw_input("What cards would you like to play (random, set, choice)? ")
+            if cardSet.lower() == 'random':
+                cards = self.chooseRandom()
+            elif cardSet.lower() == 'choice':
+                cards = self.chooseCards()
+            elif cardSet.lower() == 'set':
+                cards = self.chooseSet()
+            else:
+                cardSet = ""
 
         # Add decks to the supply
         # TREASURE CARDS
@@ -130,19 +143,66 @@ class Game:
                     return self.chooseCards()
                 try:
                     card = [ca for ca in cards if ca.lower() == c.lower()][0]
-                    cards.remove(card)
                     chosen.append(card)
                     counter += 1
                 except IndexError:
                     pass
         return chosen
 
+    def chooseSet(self):
+        files = {}
+        try:
+            for f in os.listdir("lib"):
+                files[f.split('.')[0]] = f
+        except OSError:
+            print "Could not find the lib directory!"
+            exit(1)
+        print "AVAILABLE SETS:"
+        print 30*'-'
+        for i in range(len(files)):
+            print "{}) {}".format(i+1,files.keys()[i])
+        choice = ""
+        while len(choice) == 0:
+            choice = raw_input("Choose your set (name or number): ")
+            try:
+                index = int(choice)
+                if index > 0 and index <= len(files):
+                    choice = files.keys()[index-1]
+                else:
+                    choice = ""
+            except ValueError:
+                try:
+                    f = files[choice]
+                except KeyError:
+                    choice = ""
+        # Make cards from file
+        cards = []
+        with open(os.path.join("lib",files[choice]),"r") as input:
+            contents = [line for line in input.readlines() if not line.startswith('#')]
+        for line in contents:
+            try:
+                cards.append(line.strip().capitalize())
+            except AttributeError:
+                print "Unrecognized card: {}".format(line)
+                exit(1)
+        return cards
+            
+    def chooseRandom(self):
+        cards = [c for c in dir(Cards) if not c.startswith('__') and issubclass(getattr(Cards,c),ActionCard) and c is not 'ActionCard']
+        chosen = []
+        choices = [i for i in range(len(cards))]
+        for i in range(10):
+            which = int(random()*len(cards))
+            card = cards.pop(which)
+            # Witch and Curse go together
+            if card.lower() == 'witch':
+                chosen.append('Curse')
+            elif card.lower() == 'curse':
+                chosen.append('Witch')
+            chosen.append(card.capitalize())
+        return chosen
+
 def main():
     game = Game()
     
 if __name__ == '__main__':main()
-
-
-
-
-
