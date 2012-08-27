@@ -3,7 +3,7 @@ from Player import Player
 from Card import TreasureCard, ActionCard, VictoryCard
 from ComputerPlayer import ComputerPlayer
 import Actions
-import Reactions
+import Cards
 
 class Game:
     def __init__(self, players=2):
@@ -15,37 +15,37 @@ class Game:
 
         # Build the base deck
         # TREASURE CARDS
-        self.supply.addDeck(TreasureCard(value=1,cost=0,name="copper"),20)
-        self.supply.addDeck(TreasureCard(value=2,cost=3,name="silver"),20)
-        self.supply.addDeck(TreasureCard(value=3,cost=6,name="gold"),20)
+        self.supply.addDeck(Cards.Copper(),20)
+        self.supply.addDeck(Cards.Silver(),20)
+        self.supply.addDeck(Cards.Gold(),20)
 
         # VICTORY CARDS
         vcs = players * 2 + 4
-        self.supply.addDeck(VictoryCard(value=1,cost=2,name="estate"),vcs)
-        self.supply.addDeck(VictoryCard(value=3,cost=5,name="duchy"),vcs)
-        self.supply.addDeck(VictoryCard(value=6,cost=8,name="province"),vcs)
+        self.supply.addDeck(Cards.Estate(),vcs)
+        self.supply.addDeck(Cards.Duchy(),vcs)
+        self.supply.addDeck(Cards.Province(),vcs)
 
         # ACTION CARDS
-        self.supply.addDeck(ActionCard(cost=3,name="woodcutter",action=Actions.woodcutter),10)
-        self.supply.addDeck(ActionCard(cost=5,name="festival",action=Actions.festival),10)
-        self.supply.addDeck(ActionCard(cost=5,name="market",action=Actions.market),10)
-        self.supply.addDeck(ActionCard(cost=2,name="chapel",action=Actions.chapel),10)
-        self.supply.addDeck(ActionCard(cost=2,name="cellar",action=Actions.cellar),10)
-        self.supply.addDeck(ActionCard(cost=4,name="feast",action=Actions.feast),10)
-        self.supply.addDeck(ActionCard(cost=4,name="moneylender",action=Actions.moneylender),10)
-        self.supply.addDeck(ActionCard(cost=4,name="throneroom",action=Actions.throneroom),10)
-        self.supply.addDeck(ActionCard(cost=2,name="moat",action=Actions.moat,reaction=Reactions.moat),10)
-        self.supply.addDeck(ActionCard(cost=4,name="workshop",action=Actions.workshop),10)
-        self.supply.addDeck(ActionCard(cost=4,name="smithy",action=Actions.smithy),10)
-        self.supply.addDeck(ActionCard(cost=4,name="remodel",action=Actions.remodel),10)
-        self.supply.addDeck(ActionCard(cost=3,name="village",action=Actions.village),10)
-        self.supply.addDeck(ActionCard(cost=5,name="mine",action=Actions.mine),10)
-        self.supply.addDeck(ActionCard(cost=6,name="adventurer",action=Actions.adventurer),10)
-        self.supply.addDeck(ActionCard(cost=5,name="library",action=Actions.library),10)
-        self.supply.addDeck(ActionCard(cost=5,name="councilroom",action=Actions.councilroom),10)
-        self.supply.addDeck(ActionCard(cost=4,name="militia",action=Actions.militia),10)
-        self.supply.addDeck(ActionCard(cost=4,name="bureaucrat",action=Actions.bureaucrat),10)
-        self.supply.addDeck(ActionCard(cost=5,name="witch",action=Actions.witch),10)
+        self.supply.addDeck(Cards.Woodcutter(),10)
+        self.supply.addDeck(Cards.Festival(),10)
+        self.supply.addDeck(Cards.Market(),10)
+        self.supply.addDeck(Cards.Chapel(),10)
+        self.supply.addDeck(Cards.Cellar(),10)
+        self.supply.addDeck(Cards.Feast(),10)
+        self.supply.addDeck(Cards.Moneylender(),10)
+        self.supply.addDeck(Cards.Throneroom(),10)
+        self.supply.addDeck(Cards.Moat(),10)
+        self.supply.addDeck(Cards.Workshop(),10)
+        self.supply.addDeck(Cards.Smithy(),10)
+        self.supply.addDeck(Cards.Remodel(),10)
+        self.supply.addDeck(Cards.Village(),10)
+        self.supply.addDeck(Cards.Mine(),10)
+        self.supply.addDeck(Cards.Adventurer(),10)
+        self.supply.addDeck(Cards.Library(),10)
+        self.supply.addDeck(Cards.Councilroom(),10)
+        self.supply.addDeck(Cards.Militia(),10)
+        self.supply.addDeck(Cards.Bureaucrat(),10)
+        self.supply.addDeck(Cards.Witch(),10)
 
         # Create the players
         user = raw_input("What is your name? ")
@@ -63,7 +63,7 @@ class Game:
             self.players.append(ComputerPlayer(self))
 
         for p in self.players:
-            newHand = 3*[VictoryCard(cost=2,value=1,name="estate")] + 7*[TreasureCard(cost=0,value=1,name="copper")]
+            newHand = 3*[Cards.Estate()] + 7*[Cards.Copper()]
             p.deck.extend( newHand )
             p.shuffle(p.deck)
 
@@ -90,7 +90,7 @@ class Game:
         for player in self.players:
             allCards = player.hand + player.deck + player.discard
             vps = [c for c in allCards if isinstance(c,VictoryCard)]
-            player.score = sum(vp.value for vp in vps)
+            player.score = sum(vp.getValue(player) for vp in vps)
         ranks = sorted(self.players,key=lambda x:x.score,reverse=True)
         print
         print "{} is the winner!".format(ranks[0].name)

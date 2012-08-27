@@ -25,7 +25,7 @@ class Supply (object):
         '''
         Counts the number of empty piles in the supply (action cards).
         '''
-        return len(filter(lambda x:len(x)==0,self.actions.values()))
+        return len([deck for deck in self.actions.values() if len(deck)==0])
 
     def count(self, cardName):
         '''

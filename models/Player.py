@@ -233,7 +233,7 @@ class Player (object):
         effect the attack (e.g., discard 2 cards, gain a curse, etc).
         '''
         # For human players, just ask if they want to use a defense card, and play it here.
-        defenseCards = [card for card in self.hand if card.reaction]
+        defenseCards = [card for card in self.hand if 'react' in dir(card)]
         if len(defenseCards) > 0:
             print "{} has played an attack card.".format(attacker.name)
             defense = ""
@@ -243,7 +243,7 @@ class Player (object):
                     attack(self)
                 try:
                     card = defenseCards.filter(lambda x:x.name == defense,defenseCards)[0]
-                    card.reaction(self,self.game.getOpponents(self),attack)
+                    card.react(self,self.game.getOpponents(self),attack)
                 except IndexError:
                     print "You don't have that card."
                     defense = ""
