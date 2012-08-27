@@ -1,8 +1,8 @@
-from Supply import Supply
-from Player import Player
-from Card import TreasureCard, ActionCard, VictoryCard
-from ComputerPlayer import ComputerPlayer
-import Cards
+from models.Supply import Supply
+from models.Player import Player
+from models.Card import TreasureCard, ActionCard, VictoryCard
+from models.ComputerPlayer import ComputerPlayer
+import models.Cards as Cards
 
 class Game:
     def __init__(self, players=2):

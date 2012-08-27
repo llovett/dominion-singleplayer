@@ -1,0 +1,35 @@
+#
+# BASE DECK
+# 
+# Only supply cards need mention. The usual treasure and victory point
+# cards will be added automatically in the game (that is, estate -
+# province, copper - gold). Any additional treasure or victory point
+# cards need to be specified explicitly. Cards should be listed
+# one-per-line. Blank lines and lines beginning with '#' as the first
+# character will be ignored.
+#
+curse
+chapel
+cellar
+moat
+woodcutter
+workshop
+village
+chancellor
+spy
+moneylender
+gardens
+militia
+bureaucrat
+smithy
+throne room
+remodel
+feast
+market
+festival
+witch
+laboratory
+library
+council room
+mine
+adventurer
