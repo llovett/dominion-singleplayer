@@ -27,8 +27,6 @@ class Player (object):
             self.deck = self.discard + self.deck
             self.discard = []
         card = self.deck.pop()
-        # This should only happen for human players. Split Player into HumanPlayer and ComputerPlayer?
-        print "{} draws a {}".format(self.name,card.name)
         self.hand.append(card)
         return card
 
@@ -56,28 +54,13 @@ class Player (object):
         '''
         Select a card from 'selection' to put on top of the deck.
         '''
-        choice = ""
-        while len(choice) == 0:
-            for s in selection:
-                print s
-            choice = raw_input("Choose a card to put on top of your deck: ")
-            select = [c for c in selection if c.name == choice]
-            if len(select) == 0:
-                print "You can't select that card."
-                choice = ""
-            else:
-                c = select[0]
-                self.hand.remove(c)
-                self.deck.append(c)
+        raise NotImplementedError
         
     def discardCardChoice(self):
         '''
         Prompts the user to discard a card. Returns the card discarded, or None.
         '''
-        which = raw_input("Discard a card (name)? ")
-        if which == 'none' or len(which) == 0:
-            return None
-        return self.discardCard(which)
+        raise NotImplementedError
 
     def printStatus(self):
         def round5(num):
@@ -100,6 +83,8 @@ class Player (object):
 
         cards = self.selectCard()
         while cards:
+            for card in cards:
+                self.hand.remove(card)
             self.active_cards.extend(cards)
             for card in cards:
                 print "{} plays {}".format(self.name,card.name)
@@ -107,9 +92,14 @@ class Player (object):
             cards = self.selectCard()
 
         self.turn_phase = BUY_PHASE
-        card = self.buyCard()
-        while card:
+        while self.numBuys > 0:
             card = self.buyCard()
+            self.numBuys -= 1
+            self.coin -= card.cost
+            if card:
+                print "{} buys a {}.".format(self.name,card.name)
+            else:
+                break
 
         self.turn_phase = CLEANUP_PHASE
         # Hand goes into discard
@@ -127,48 +117,7 @@ class Player (object):
         able to be played (e.g., action card is not played in the buy phase, etc.)
         Return the a list of the cards selected.
         '''
-
-        if len(self.hand) == 0:
-            print "You have no cards left."
-            return None
-        
-        print 30 * '-'
-        print "Your cards:"
-        for i in range(len(self.hand)):
-            print str(self.hand[i])
-        print 30 * '-'
-
-        which = ""
-        card = None
-        while len(which) == 0:
-            self.printStatus()
-
-            which = raw_input("Which card do you want to play (name, $, or 'none')? ")
-            if which == '$':
-                def q(list,x):
-                    list.remove(x)
-                    return x
-                cards = [q(self.hand,x) for x in filter(lambda x:isinstance(x,TreasureCard),self.hand)]
-                if len(cards) > 0:
-                    return cards
-                else:
-                    print "You have no treasure cards."
-                    which = ""
-            elif which == 'none' or len(which) == 0:
-                return None
-            else:
-                card = filter(lambda x:x.name == which,self.hand)
-                if len(card) == 0:
-                    print "You don't have that card."
-                    which = ""
-                else:
-                    card = card[0]
-                    if isinstance(card,ActionCard) and self.numActions < 1:
-                        print "You have no actions left."
-                        which = ""
-
-        self.hand.remove(card)
-        return [card]
+        raise NotImplementedError
 
     def findCard(self,cardName):
         '''
@@ -188,37 +137,7 @@ class Player (object):
         from the coin of the user. Add the card to the user's discard pile.
         Return the card if a card was purchased successfully, else None.
         '''
-
-        what = ""
-        while len(what) < 1 and self.numBuys > 0:
-            self.printStatus()
-            what = raw_input("What card do you want to buy (name, or 'none')? ")
-            try:
-                # Exit at user's request
-                if what.lower() == "none" or len(what) == 0:
-                    return None
-
-                # See if there are cards left
-                if self.game.supply.count(what) > 0:
-                    card = self.game.supply.viewCard(what)
-                    # Can we afford it?
-                    if card.cost <= self.coin:
-                        card = self.game.supply.drawCard(what)
-                        self.coin -= card.cost
-                        self.discard.append(card)
-                        self.numBuys -= 1
-                        print "You gained "+str(card)
-                        return card
-                    else:
-                        print "Not enough coin for that."
-                        what = ""
-                else:
-                    print "That card isn't in the supply."
-                    what = ""
-            except KeyError:
-                what = ""
-
-        return None
+        raise NotImplementedError
 
     def shuffle(self,deck):
         for c in deck:
@@ -232,23 +151,7 @@ class Player (object):
         The 'attack' parameter is a function that can be applied to the player to
         effect the attack (e.g., discard 2 cards, gain a curse, etc).
         '''
-        # For human players, just ask if they want to use a defense card, and play it here.
-        defenseCards = [card for card in self.hand if 'react' in dir(card)]
-        if len(defenseCards) > 0:
-            print "{} has played an attack card.".format(attacker.name)
-            defense = ""
-            while len(defense) == 0:
-                defense = raw_input("Would you like to reveal a defense card (name or 'none')? ")
-                if defense.lower() == 'none':
-                    attack(self)
-                try:
-                    card = defenseCards.filter(lambda x:x.name == defense,defenseCards)[0]
-                    card.react(self,self.game.getOpponents(self),attack)
-                except IndexError:
-                    print "You don't have that card."
-                    defense = ""
-        else:
-            attack(self)
+        raise NotImplementedError
                     
     def __str__(self):
         return "%s: <%s>"%(self.name,str(self.deck))

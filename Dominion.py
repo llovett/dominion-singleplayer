@@ -2,6 +2,7 @@ from models.Supply import Supply
 from models.Player import Player
 from models.Card import TreasureCard, ActionCard, VictoryCard
 from models.ComputerPlayer import ComputerPlayer
+from models.HumanPlayer import HumanPlayer
 import models.Cards as Cards
 from random import random
 import os
@@ -43,31 +44,9 @@ class Game:
             type = getattr(Cards,card)
             self.supply.addDeck(type(),10)
 
-        # # ACTION CARDS
-        # self.supply.addDeck(Cards.Woodcutter(),10)
-        # self.supply.addDeck(Cards.Festival(),10)
-        # self.supply.addDeck(Cards.Market(),10)
-        # self.supply.addDeck(Cards.Chapel(),10)
-        # self.supply.addDeck(Cards.Cellar(),10)
-        # self.supply.addDeck(Cards.Feast(),10)
-        # self.supply.addDeck(Cards.Moneylender(),10)
-        # self.supply.addDeck(Cards.Throneroom(),10)
-        # self.supply.addDeck(Cards.Moat(),10)
-        # self.supply.addDeck(Cards.Workshop(),10)
-        # self.supply.addDeck(Cards.Smithy(),10)
-        # self.supply.addDeck(Cards.Remodel(),10)
-        # self.supply.addDeck(Cards.Village(),10)
-        # self.supply.addDeck(Cards.Mine(),10)
-        # self.supply.addDeck(Cards.Adventurer(),10)
-        # self.supply.addDeck(Cards.Library(),10)
-        # self.supply.addDeck(Cards.Councilroom(),10)
-        # self.supply.addDeck(Cards.Militia(),10)
-        # self.supply.addDeck(Cards.Bureaucrat(),10)
-        # self.supply.addDeck(Cards.Witch(),10)
-
         # Create the players
         user = raw_input("What is your name? ")
-        self.user = Player(user,self)
+        self.user = HumanPlayer(user,self)
         self.players.append(self.user)
 
         numPlayers = 0
