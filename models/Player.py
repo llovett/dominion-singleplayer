@@ -32,8 +32,8 @@ class Player (object):
         self.hand.append(card)
         return card
 
-    def gain(self,card,*args):
-        to = self.discard if len(args) == 0 else args[0]
+    def gain(self,card,**kwargs):
+        to = self.discard if 'to' not in kwargs else kwargs['to']
         '''
         Player gains a card.
         '''

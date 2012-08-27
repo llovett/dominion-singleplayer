@@ -133,20 +133,21 @@ class Game:
                     print "{}{}".format(chosen[i],"," if i < len(chosen)-1 else ""),
                 print
             c = raw_input("Choose a card ({} left): ".format(10-counter))
+            card = None
             try:
                 index = int(c)-1
                 if index >= 0 and index < len(cards):
-                    chosen.append(cards[index])
-                    counter += 1
+                    card = cards[index]
             except ValueError:
                 if c == 'restart':
                     return self.chooseCards()
                 try:
                     card = [ca for ca in cards if ca.lower() == c.lower()][0]
-                    chosen.append(card)
-                    counter += 1
                 except IndexError:
                     pass
+            if card and card not in chosen:
+                chosen.append(card)
+                counter += 1
         return chosen
 
     def chooseSet(self):

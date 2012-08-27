@@ -364,7 +364,7 @@ class Bureaucrat (ActionCard):
     def action(self,player,opponents):
         silver = player.game.supply.drawCard("silver")
         if silver:
-            player.deck.append(silver)
+            player.gain(silver,to=player.deck)
             print "{} puts a silver on top of their deck.".format(player.name)
         for o in opponents:
             def attack(p):
