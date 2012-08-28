@@ -70,7 +70,7 @@ class Supply (object):
     def __str__(self):
         value = ""
         def makeColumns(data):
-            sep,cur,last = 20,0,0
+            sep,cur,last = 25,0,0
             string = "{}".format(data[0])
             last = len(data[0])
             for i in range(1,len(data)):
