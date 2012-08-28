@@ -94,10 +94,10 @@ class Player (object):
         self.turn_phase = BUY_PHASE
         while self.numBuys > 0:
             card = self.buyCard()
-            self.numBuys -= 1
-            self.coin -= card.cost
             if card:
                 print "{} buys a {}.".format(self.name,card.name)
+                self.numBuys -= 1
+                self.coin -= card.cost
             else:
                 break
 

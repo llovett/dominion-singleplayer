@@ -36,13 +36,13 @@ class Duchy (VictoryCard):
     def __init__(self,**kwargs):
         super(Duchy,self).__init__(name="duchy",cost=5,**kwargs)
     def getValue(self,player):
-        return 2
+        return 3
 
 class Province (VictoryCard):
     def __init__(self,**kwargs):
         super(Province,self).__init__(name="province",cost=8,**kwargs)
     def getValue(self,player):
-        return 3
+        return 6
     
 class Gardens (VictoryCard):
     def __init__(self,**kwargs):
@@ -193,7 +193,7 @@ class Workshop (ActionCard):
                 which = ""
             else:
                 print "You gain a {}.".format(card.name)
-                player.gain(player.supply.drawCard(which))
+                player.gain(player.game.supply.drawCard(which))
 
 class Village (ActionCard):
     def __init__(self,**kwargs):

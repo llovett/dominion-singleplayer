@@ -69,18 +69,29 @@ class Supply (object):
 
     def __str__(self):
         value = ""
+        def makeColumns(data):
+            sep,cur,last = 20,0,0
+            string = "{}".format(data[0])
+            last = len(data[0])
+            for i in range(1,len(data)):
+                arg = data[i]
+                cur = len(arg)
+                string += ("{:>"+str(sep-last+cur)+"}").format(arg)
+                last = cur
+            return string
+
         for title,category in (('TREASURE CARDS',self.treasures),
                                ('ACTION CARDS',self.actions),
                                ('VICTORY CARDS',self.vcs)):
             value += "%s:\n"%title
             value += 30*'-' + "\n"
-            for key,val in category.iteritems():
-                value += "* %s *\n"%key.upper()
-                if len(category[key]) > 0:
-                    value += "cost: %s\n"%str(category[key][0].cost)
-                    value += "%d left in supply\n"%len(category[key])
-                else:
-                    value += "None left."
-                value += "\n"
+            byPrice = [l[0] for l in sorted(category.values(),key=lambda x:x[0].cost)]
+            for i in range(0,len(byPrice),3):
+                cards = [byPrice[c] for c in range(i,min(i+3,len(byPrice)))]
+                titles = makeColumns(["* {} *".format(c.name.upper()) for c in cards])
+                costs = makeColumns(["cost: {}".format(c.cost) if self.count(c.name) > 0 else "None left." for c in cards])
+                counts = makeColumns(["{} left in supply.".format(self.count(c.name)) if self.count(c.name) > 0 else "" for c in cards])
+                value += "\n".join([titles,costs,counts])
+                value += "\n\n"
 
         return value

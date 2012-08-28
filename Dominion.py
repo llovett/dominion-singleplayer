@@ -70,9 +70,6 @@ class Game:
         print "The supply:"
         print self.supply
 
-        print "Number of empties: %d"%self.supply.countEmpties()
-        print "provies: %d"%self.supply.count("province")
-            
         # The game loop
         while self.supply.countEmpties() < 3 and self.supply.count("province") > 0:
             for player in self.players:
