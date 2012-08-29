@@ -67,9 +67,6 @@ class Game:
             # Draw a hand for each player
             for i in range(5):p.drawCard()
 
-        print "The supply:"
-        print self.supply
-
         # The game loop
         while self.supply.countEmpties() < 3 and self.supply.count("province") > 0:
             for player in self.players:
@@ -81,15 +78,18 @@ class Game:
                 print 30*'='
                 player.takeTurn()
         # End-of-game
+        vcsMap = {}
         for player in self.players:
             allCards = player.hand + player.deck + player.discard
-            vps = [c for c in allCards if isinstance(c,VictoryCard)]
+            vps = sorted([c for c in allCards if isinstance(c,VictoryCard)],key=lambda x:x.getValue(player))
+            vcsMap[player.name] = vps
             player.score = sum(vp.getValue(player) for vp in vps)
         ranks = sorted(self.players,key=lambda x:x.score,reverse=True)
         print
         print "{} is the winner!".format(ranks[0].name)
         for p in ranks:
-            print "name:{}\nscore:{}".format(p.name,p.score)
+            print str(p)
+            print "TOTAL: {}".format(p.score)
             print 30*'-'
 
     def getOpponents(self,player):

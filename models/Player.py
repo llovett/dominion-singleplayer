@@ -62,15 +62,6 @@ class Player (object):
         '''
         raise NotImplementedError
 
-    def printStatus(self):
-        def round5(num):
-            return int(float(num)/5)*5
-        print 30 * '-'
-        print "About {} cards left in your deck, {} in the discard.".format(round5(len(self.deck)),
-                                                                            round5(len(self.discard)))
-        print "BUYS: %d, ACTIONS: %d, COIN: %d"%(self.numBuys,self.numActions,self.coin)
-        print 30 * '-'
-
     def takeTurn(self):
         '''
         The player takes a turn. Do not override this method. See selectCard()
@@ -96,6 +87,7 @@ class Player (object):
             card = self.buyCard()
             if card:
                 print "{} buys a {}.".format(self.name,card.name)
+                self.gain(card)
                 self.numBuys -= 1
                 self.coin -= card.cost
             else:
@@ -152,6 +144,23 @@ class Player (object):
         effect the attack (e.g., discard 2 cards, gain a curse, etc).
         '''
         raise NotImplementedError
-                    
+
+    def allCards(self):
+        return self.hand + self.deck + self.discard
+    
     def __str__(self):
-        return "%s: <%s>"%(self.name,str(self.deck))
+        def categorize(l):
+            result = []
+            last = None
+            for e in l:
+                if isinstance(e,last.__class__):
+                    result[-1].append(e)
+                else:
+                    result.append([e])
+                last = e
+            return result
+        vps = categorize(sorted([c for c in self.allCards() if isinstance(c,VictoryCard)],key=lambda x:x.getValue(self)))
+        treasures = categorize(sorted([c for c in self.allCards() if isinstance(c,TreasureCard)],key=lambda x:x.getValue(self)))
+        actions = categorize(sorted([c for c in self.allCards() if isinstance(c,ActionCard)],key=lambda x:x.cost))
+
+        return "\n".join([self.name] + ["{} x {}".format(len(cards),cards[0].name) for cardSet in (actions,treasures,vps) for cards in cardSet])

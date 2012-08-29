@@ -6,6 +6,14 @@ class HumanPlayer (Player):
     def __init__(self,name,game):
         super(HumanPlayer,self).__init__(name,game)
 
+    def printStatus(self):
+        def round5(num):
+            return int(float(num)/5)*5
+        print "About {} cards left in your deck, {} in the discard.".format(round5(len(self.deck)),
+                                                                            round5(len(self.discard)))
+        print "BUYS: %d, ACTIONS: %d, COIN: %d"%(self.numBuys,self.numActions,self.coin)
+        print 30 * '-'
+
     def drawCard(self):
         card = Player.drawCard(self)
         print "{} draws {}".format(self.name,card.name)
@@ -36,9 +44,8 @@ class HumanPlayer (Player):
         if len(self.hand) == 0:
             print "You have no cards left."
             return None
-        
-        print 30 * '-'
-        print "Your cards:"
+
+        print "YOUR CARDS:"
         for i in range(len(self.hand)):
             print str(self.hand[i])
         print 30 * '-'
@@ -87,7 +94,6 @@ class HumanPlayer (Player):
                     # Can we afford it?
                     if card.cost <= self.coin:
                         card = self.game.supply.drawCard(what)
-                        self.discard.append(card)
                         print "You gained "+str(card)
                         return card
                     else:
